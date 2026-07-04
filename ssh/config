@@ -1,0 +1,16 @@
+# SSH client configuration (managed by dotfiles).
+#
+# This file contains no secrets — only host aliases and options. Private keys
+# live only in ~/.ssh and are never tracked in or installed from this repo.
+
+# Global defaults
+Host *
+    AddKeysToAgent yes
+    IdentitiesOnly yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519

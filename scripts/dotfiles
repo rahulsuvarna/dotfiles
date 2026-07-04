@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# dotfiles — command-line entry point for managing this dotfiles repository.
+#
+# Usage:
+#   dotfiles <command>
+#
+# Run "dotfiles --help" for the list of commands.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "${SCRIPT_DIR}/lib.sh"
+
+usage() {
+    cat <<'EOF'
+dotfiles — manage this dotfiles repository
+
+Usage:
+  dotfiles <command>
+
+Commands:
+  install         Install all configuration modules (git, ssh)
+
+Coming soon:
+  doctor          Check the health of the current setup
+  verify          Verify installed configuration
+  update          Update installed configuration from the repository
+
+Options:
+  -h, --help      Show this help and exit
+EOF
+}
+
+# install — run every installer module. Behaviour preserved from the previous
+# bootstrap.sh entry point.
+cmd_install() {
+    # Share one backup directory across every installer run, so all displaced
+    # files from a single run are grouped together.
+    export DOTFILES_BACKUP_DIR="${HOME}/.dotfiles-backups/$(date +%Y%m%d-%H%M%S)"
+
+    printf '=== dotfiles install ===\n'
+
+    # Run each install module. Add new modules here as they are implemented.
+    bash "${SCRIPT_DIR}/install-git.sh"
+    bash "${SCRIPT_DIR}/install-ssh.sh"
+
+    printf '\n=== Install complete ===\n'
+    success "All modules installed."
+}
+
+main() {
+    local command="${1:-}"
+    case "${command}" in
+        install)
+            shift
+            cmd_install "$@"
+            ;;
+        -h | --help | help)
+            usage
+            ;;
+        "")
+            usage
+            exit 1
+            ;;
+        *)
+            error "Unknown command: ${command}"
+            printf '\n'
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
