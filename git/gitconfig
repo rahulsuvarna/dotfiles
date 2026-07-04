@@ -1,0 +1,11 @@
+[user]
+    name = Rahul Suvarna
+
+[core]
+    excludesfile = ~/.gitignore_global
+
+[includeIf "gitdir:~/workspace/personal/"]
+    path = ~/.gitconfig-personal
+
+[includeIf "gitdir:~/workspace/work/"]
+    path = ~/.gitconfig-work
